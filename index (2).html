@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0a0a0a">
+<title>TROY / DRAGON</title>
+<style>
+:root{
+    --bg:#0a0a0a;
+    --surface:#141414;
+    --surface-2:#1a1a1a;
+    --surface-3:#202020;
+    --line:#242424;
+    --line-2:#2d2d2d;
+    --text:#ececec;
+    --text-dim:#8a8a8a;
+    --text-faint:#5a5a5a;
+    --red:#ff3a3a;
+    --red-bg:#2a0d0d;
+    --orange:#ff9a2a;
+    --orange-bg:#2a1a08;
+    --blue:#4aa0ff;
+    --blue-bg:#0d1b2a;
+    --green:#3ecf6e;
+    --green-bg:#0d2217;
+    --purple:#b677ff;
+    --purple-bg:#1a0d2a;
+    --yellow:#ffd54a;
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-bot: env(safe-area-inset-bottom, 0px);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none}
+html,body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','SF Pro Text','Segoe UI',Roboto,sans-serif;font-size:15px;line-height:1.42;-webkit-font-smoothing:antialiased}
+body{padding:calc(var(--safe-top) + 8px) 12px calc(var(--safe-bot) + 90px);overscroll-behavior-y:none}
+
+.header{text-align:center;margin-bottom:10px;padding-top:4px}
+.header .brand{font-size:22px;font-weight:800;letter-spacing:2px;background:linear-gradient(90deg,#ff3a3a 0%,#ff9a2a 40%,#b677ff 75%,#4aa0ff 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.header .sub{font-size:11px;color:var(--text-faint);margin-top:2px;letter-spacing:0.4px;text-transform:uppercase}
+
+/* Protocol banner (tendon science) */
+.proto-strip{display:flex;gap:6px;margin-bottom:10px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:2px}
+.proto-strip::-webkit-scrollbar{display:none}
+.proto-chip{flex-shrink:0;padding:8px 12px;background:var(--surface);border:1px solid var(--line);border-radius:10px;font-size:11px;color:var(--text-dim);font-weight:600;cursor:pointer;transition:all .15s}
+.proto-chip:active{transform:scale(0.95)}
+.proto-chip b{color:var(--text);display:block;font-size:10px;letter-spacing:0.4px;text-transform:uppercase;margin-bottom:1px}
+.proto-chip.hsr{border-left:3px solid var(--orange)}
+.proto-chip.iso{border-left:3px solid var(--purple)}
+.proto-chip.ecc{border-left:3px solid var(--red)}
+.proto-chip.con{border-left:3px solid var(--blue)}
+
+/* Week selector */
+.week-card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:10px}
+.week-card .label{display:flex;justify-content:space-between;align-items:center;color:var(--text-dim);font-size:11px;text-transform:uppercase;letter-spacing:0.6px;margin-bottom:8px}
+.week-card .label strong{color:var(--text);font-weight:600}
+.week-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
+.week-btn{position:relative;height:38px;border-radius:10px;border:1px solid var(--line-2);background:var(--surface-2);color:var(--text-dim);font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .08s}
+.week-btn:active{transform:scale(0.94)}
+.week-btn .micro{position:absolute;bottom:2px;font-size:8px;font-weight:600;letter-spacing:0.4px;opacity:0.7}
+.week-btn.meso-1{border-color:rgba(255,58,58,0.35)}
+.week-btn.meso-2{border-color:rgba(255,154,42,0.35)}
+.week-btn.meso-3{border-color:rgba(74,160,255,0.35)}
+.week-btn.deload{border-color:rgba(62,207,110,0.4)}
+.week-btn.active{color:#fff}
+.week-btn.meso-1.active{background:var(--red);border-color:var(--red);box-shadow:0 0 0 3px rgba(255,58,58,0.18)}
+.week-btn.meso-2.active{background:var(--orange);border-color:var(--orange);color:#000;box-shadow:0 0 0 3px rgba(255,154,42,0.18)}
+.week-btn.meso-3.active{background:var(--blue);border-color:var(--blue);box-shadow:0 0 0 3px rgba(74,160,255,0.18)}
+.week-btn.deload.active{background:var(--green);border-color:var(--green);box-shadow:0 0 0 3px rgba(62,207,110,0.18)}
+
+.meso-banner{margin-top:10px;padding:10px 12px;border-radius:10px;font-size:12px;display:flex;flex-direction:column;gap:4px}
+.meso-banner.meso-1{background:var(--red-bg);border-left:3px solid var(--red)}
+.meso-banner.meso-2{background:var(--orange-bg);border-left:3px solid var(--orange)}
+.meso-banner.meso-3{background:var(--blue-bg);border-left:3px solid var(--blue)}
+.meso-banner.deload{background:var(--green-bg);border-left:3px solid var(--green)}
+.meso-banner .title{font-weight:700;color:var(--text);letter-spacing:0.3px}
+.meso-banner .desc{color:var(--text-dim);line-height:1.45}
+
+.rpe-pills{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.rpe-pills .pill{font-size:10px;padding:4px 8px;border-radius:6px;background:var(--surface-3);color:var(--text-dim);font-weight:600;letter-spacing:0.3px}
+.rpe-pills .pill b{color:var(--text);margin-left:4px}
+
+/* Day nav */
+.day-nav{display:flex;gap:6px;margin-bottom:10px;position:sticky;top:calc(var(--safe-top) - 2px);background:var(--bg);padding:8px 0;z-index:50;border-bottom:1px solid var(--line);backdrop-filter:saturate(180%) blur(12px);-webkit-backdrop-filter:saturate(180%) blur(12px)}
+.day-nav button{flex:1;padding:12px 4px;border:1px solid var(--line-2);background:var(--surface-2);color:var(--text-dim);border-radius:10px;font-size:12px;font-weight:700;letter-spacing:0.4px;transition:transform .08s;cursor:pointer}
+.day-nav button:active{transform:scale(0.95)}
+.day-nav button.active{background:linear-gradient(180deg,var(--surface-3),var(--surface-2));color:var(--text);border-color:var(--red)}
+.day-nav button .dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--text-faint);margin-left:4px;vertical-align:middle}
+.day-nav button .dot.done{background:var(--green);box-shadow:0 0 6px var(--green)}
+.day-nav button.info{flex:0.5}
+
+.section{display:none;animation:fadein .25s ease}
+.section.active{display:block}
+@keyframes fadein{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+.day-title{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;padding:0 2px}
+.day-title h2{font-size:17px;font-weight:700;letter-spacing:0.3px}
+.day-title .meta{font-size:11px;color:var(--text-faint);text-transform:uppercase;letter-spacing:0.5px}
+
+.progress-row{display:flex;align-items:center;gap:8px;margin-bottom:12px;padding:0 2px}
+.progress-bar{flex:1;height:6px;background:var(--surface-2);border-radius:3px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--red),var(--orange));transition:width .3s ease;border-radius:3px}
+.progress-txt{font-size:11px;color:var(--text-dim);font-variant-numeric:tabular-nums}
+
+.warmup{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:10px}
+.warmup h3{color:var(--orange);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.7px;margin-bottom:6px}
+.warmup ul{list-style:none;padding:0}
+.warmup li{font-size:13px;color:var(--text-dim);padding:3px 0;padding-left:14px;position:relative}
+.warmup li::before{content:'';position:absolute;left:0;top:10px;width:4px;height:4px;border-radius:50%;background:var(--orange)}
+
+.day-intro{background:var(--purple-bg);border:1px solid rgba(182,119,255,0.3);border-radius:10px;padding:10px 12px;margin-bottom:10px;font-size:12px;color:#caa8ee;line-height:1.5}
+.day-intro b{color:#e0c9ff}
+
+/* Exercise card */
+.exercise{background:var(--surface);border:1px solid var(--line);border-radius:14px;margin-bottom:9px;overflow:hidden;transition:border-color .2s}
+.exercise.optional{opacity:0.78;border-style:dashed}
+.exercise.done{border-color:rgba(62,207,110,0.45)}
+.exercise-header{display:flex;align-items:center;gap:10px;padding:13px 12px;cursor:pointer;user-select:none}
+.ex-num{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;flex-shrink:0}
+.zone-power .ex-num{background:var(--red);color:#fff}
+.zone-hsr .ex-num{background:var(--orange);color:#000}
+.zone-ecc .ex-num{background:linear-gradient(135deg,var(--red),#ff7a2a);color:#fff}
+.zone-iso .ex-num{background:var(--purple);color:#fff}
+.zone-volume .ex-num{background:var(--blue);color:#fff}
+.zone-grip .ex-num{background:var(--surface-3);color:var(--text-dim);border:1px solid var(--line-2)}
+.exercise.done .ex-num{background:var(--green)!important;color:#fff!important}
+
+.ex-name{flex:1;font-weight:600;font-size:15px;line-height:1.25}
+.ex-params{text-align:right;flex-shrink:0}
+.ex-params .sets{font-weight:800;font-size:15px;color:var(--text);font-variant-numeric:tabular-nums}
+.ex-params .rest{font-size:11px;color:var(--text-faint);margin-top:2px}
+.ex-chev{color:var(--text-faint);font-size:12px;transition:transform .25s;margin-left:2px}
+.exercise.open .ex-chev{transform:rotate(180deg)}
+
+.ex-body{max-height:0;overflow:hidden;transition:max-height .35s ease}
+.exercise.open .ex-body{max-height:1400px}
+.ex-body-inner{padding:0 12px 14px 50px}
+
+.tag-row{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px}
+.tag{display:inline-block;padding:3px 8px;border-radius:5px;font-size:10.5px;font-weight:700;letter-spacing:0.3px}
+.tag-rpe{background:var(--red-bg);color:#ff7070}
+.tag-tempo{background:var(--orange-bg);color:#ffb555}
+.tag-iso{background:var(--purple-bg);color:#d5a8ff}
+.tag-zone{background:var(--surface-3);color:var(--text-dim)}
+.tag-safe{background:var(--green-bg);color:#66d98a}
+.tag-opt{background:#1a1a1a;color:var(--text-faint);border:1px dashed var(--line-2)}
+
+.tempo-box{background:var(--orange-bg);border:1px solid rgba(255,154,42,0.25);border-radius:8px;padding:8px 10px;font-size:12px;color:#ffcf95;margin-bottom:8px;display:flex;gap:10px;align-items:center}
+.tempo-box .big{font-family:'SF Mono',Menlo,monospace;font-size:18px;font-weight:800;color:var(--orange);letter-spacing:2px}
+.tempo-box .lbl{font-size:10px;text-transform:uppercase;letter-spacing:0.6px;color:#b87c33;margin-bottom:2px}
+.tempo-box .desc{flex:1;font-size:11.5px;line-height:1.4;color:#d4a671}
+
+.ex-note{font-size:12.5px;color:var(--text-dim);line-height:1.5;margin-bottom:10px}
+.ex-note strong{color:var(--text)}
+
+.ex-block2{background:var(--surface-2);border-radius:8px;padding:8px 10px;font-size:11.5px;color:var(--text-dim);margin-bottom:10px;border-left:2px solid var(--orange)}
+.ex-block2 b{color:var(--orange)}
+.ex-block3{background:var(--surface-2);border-radius:8px;padding:8px 10px;font-size:11.5px;color:var(--text-dim);border-left:2px solid var(--blue)}
+.ex-block3 b{color:var(--blue)}
+
+/* Sets table */
+.sets-table{width:100%;margin-top:10px;font-size:13px}
+.sets-head{display:grid;grid-template-columns:28px 1fr 1fr 40px;gap:6px;color:var(--text-faint);font-size:10px;text-transform:uppercase;letter-spacing:0.5px;padding:4px 0;border-bottom:1px solid var(--line)}
+.sets-head div{text-align:center}
+.sets-head div:first-child{text-align:left}
+.set-row{display:grid;grid-template-columns:28px 1fr 1fr 40px;gap:6px;align-items:center;padding:6px 0;border-bottom:1px solid var(--line)}
+.set-row:last-child{border-bottom:none}
+.set-row .n{color:var(--text-dim);font-size:12px;font-weight:700;text-align:left;padding-left:2px}
+.set-row input[type="text"]{width:100%;background:var(--surface-2);border:1px solid var(--line);border-radius:6px;color:var(--text);padding:8px 4px;text-align:center;font-size:14px;font-variant-numeric:tabular-nums;font-family:inherit;outline:none;transition:border-color .15s}
+.set-row input[type="text"]:focus{border-color:var(--red)}
+.set-row.done input[type="text"]{border-color:rgba(62,207,110,0.3);background:rgba(62,207,110,0.06)}
+.set-check{width:32px;height:32px;border-radius:8px;background:var(--surface-2);border:1px solid var(--line-2);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--text-faint);font-size:16px;transition:all .15s;justify-self:end}
+.set-check:active{transform:scale(0.9)}
+.set-check.done{background:var(--green);border-color:var(--green);color:#fff}
+
+/* Rest timer modal */
+.timer-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);display:none;align-items:center;justify-content:center;z-index:200;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);padding:20px}
+.timer-overlay.show{display:flex}
+.timer-card{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:26px 22px;width:100%;max-width:320px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.6)}
+.timer-label{font-size:11px;color:var(--text-faint);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:10px}
+.timer-num{font-size:72px;font-weight:200;font-variant-numeric:tabular-nums;letter-spacing:-2px;line-height:1;margin-bottom:8px;background:linear-gradient(180deg,#fff,#aaa);-webkit-background-clip:text;background-clip:text;color:transparent}
+.timer-total{font-size:12px;color:var(--text-faint);margin-bottom:18px}
+.timer-progress{height:4px;background:var(--surface-2);border-radius:2px;overflow:hidden;margin-bottom:18px}
+.timer-progress-fill{height:100%;background:linear-gradient(90deg,var(--red),var(--orange));transition:width 0.9s linear}
+.timer-actions{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:12px}
+.timer-pill{padding:9px 4px;border-radius:8px;background:var(--surface-2);border:1px solid var(--line-2);color:var(--text-dim);font-size:12px;font-weight:700;cursor:pointer}
+.timer-pill:active{transform:scale(0.95)}
+.timer-pill.active{background:var(--red);color:#fff;border-color:var(--red)}
+.timer-close{width:100%;padding:12px;border:1px solid var(--line-2);background:transparent;color:var(--text);border-radius:10px;font-size:14px;font-weight:600;cursor:pointer}
+
+/* Info section */
+.info-card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:10px}
+.info-card h3{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
+.info-card h3 .ico{font-size:16px}
+.info-card.orange h3{color:var(--orange)}
+.info-card.red h3{color:var(--red)}
+.info-card.blue h3{color:var(--blue)}
+.info-card.green h3{color:var(--green)}
+.info-card.purple h3{color:var(--purple)}
+
+.check-list{font-size:12.5px;color:var(--text-dim)}
+.check-list p{padding:5px 0;padding-left:16px;position:relative;line-height:1.45}
+.check-list p::before{content:'—';position:absolute;left:0;color:var(--text-faint)}
+.check-list p b{color:var(--text)}
+
+.proto-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px}
+@media (max-width:380px){.proto-grid{grid-template-columns:1fr}}
+.proto-card{background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:10px}
+.proto-card h4{font-size:11px;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px}
+.proto-card p{font-size:11.5px;color:var(--text-dim);line-height:1.45}
+.proto-card.hsr h4{color:var(--orange)}
+.proto-card.iso h4{color:var(--purple)}
+.proto-card.ecc h4{color:var(--red)}
+.proto-card.con h4{color:var(--blue)}
+
+table.pretty{width:100%;border-collapse:collapse;font-size:12px;margin-top:4px}
+table.pretty th{background:var(--surface-2);color:var(--text-dim);font-weight:600;font-size:10.5px;text-transform:uppercase;letter-spacing:0.5px;padding:8px 6px;text-align:center;border-bottom:1px solid var(--line)}
+table.pretty td{padding:9px 6px;text-align:center;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
+table.pretty tr:last-child td{border-bottom:none}
+table.pretty td.l{text-align:left;color:var(--text)}
+table.pretty .hl-1{background:rgba(255,58,58,0.05)}
+table.pretty .hl-2{background:rgba(255,154,42,0.05)}
+table.pretty .hl-3{background:rgba(74,160,255,0.05)}
+table.pretty .hl-d{background:rgba(62,207,110,0.06);color:var(--green);font-weight:700}
+
+.status-box{display:flex;align-items:flex-start;gap:10px;padding:10px;border-radius:10px;margin-bottom:6px;font-size:12.5px;line-height:1.45}
+.status-box b{color:var(--text)}
+.status-box.g{background:var(--green-bg);color:#86d9a0}
+.status-box.y{background:#1a1a0a;color:#d9cd6a}
+.status-box.r{background:var(--red-bg);color:#ff8080}
+.status-ico{font-size:18px;flex-shrink:0}
+
+.reset-btn{margin-top:14px;width:100%;padding:12px;background:var(--red-bg);border:1px solid var(--red);color:#ff8a8a;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer}
+.reset-btn:active{transform:scale(0.98)}
+
+.day-done-strip{margin:8px 0 4px;padding:8px 10px;border-radius:10px;background:var(--green-bg);color:var(--green);font-size:12px;text-align:center;font-weight:700;display:none}
+.day-done-strip.show{display:block}
+
+footer{margin-top:30px;padding:16px 8px;text-align:center;color:var(--text-faint);font-size:10.5px;line-height:1.5}
+footer b{color:var(--text-dim)}
+</style>
+</head>
+<body>
+
+<div class="header">
+    <div class="brand">TROY / DRAGON</div>
+    <div class="sub">Tendon-loaded · 3 дня · 12 недель · L5-S1 safe</div>
+</div>
+
+<!-- Protocol strip -->
+<div class="proto-strip">
+    <div class="proto-chip hsr"><b>A · HSR</b>Heavy Slow Resistance — темп 3-1-3 / 5-1-1</div>
+    <div class="proto-chip iso"><b>B · ISO</b>Длинные удержания в растяжке 30–60 с</div>
+    <div class="proto-chip ecc"><b>C · ECC</b>5-секундный эксцентрик, овер-load</div>
+    <div class="proto-chip con"><b>D · CONTRAST</b>Блок III: тяжёлый → плио</div>
+</div>
+
+<!-- Week selector + mesocycle banner -->
+<div class="week-card">
+    <div class="label">
+        <span>ТЕКУЩАЯ НЕДЕЛЯ</span>
+        <strong id="weekTitle">Неделя 1 · Блок I</strong>
+    </div>
+    <div class="week-grid" id="weekGrid"></div>
+    <div id="mesoBanner" class="meso-banner meso-1">
+        <div class="title" id="mesoTitle"></div>
+        <div class="desc" id="mesoDesc"></div>
+        <div class="rpe-pills" id="rpePills"></div>
+    </div>
+</div>
+
+<!-- Day nav -->
+<div class="day-nav" id="dayNav">
+    <button class="active" data-day="d1">ПН · PUSH<span class="dot" data-dot="d1"></span></button>
+    <button data-day="d2">СР · LEGS<span class="dot" data-dot="d2"></span></button>
+    <button data-day="d3">ПТ · ARMS<span class="dot" data-dot="d3"></span></button>
+    <button class="info" data-day="info">ℹ️</button>
+</div>
+
+<!-- DAY CONTAINER -->
+<div id="dayContainer"></div>
+
+<!-- INFO SECTION -->
+<div class="section" id="info">
+
+    <div class="info-card purple">
+        <h3>🧬 Почему это НЕ бодибилдерский сплит <span class="ico"></span></h3>
+        <p style="font-size:12.5px;color:var(--text-dim);line-height:1.5;margin-bottom:10px">Каждое крупное движение построено по одному из <b style="color:var(--text)">четырёх научно-подтверждённых протоколов</b>, целенаправленно нагружающих соединительную ткань:</p>
+        <div class="proto-grid">
+            <div class="proto-card hsr">
+                <h4>A · HSR · Heavy Slow Resistance</h4>
+                <p>Темп 3-0-3 / 5-1-1 · 70–85% 1ПМ · 6–8 повт. Рост жёсткости сухожилий <b style="color:var(--text)">+20–30% за 12 нед</b>. (Beyer 2015, Kongsgaard 2009)</p>
+            </div>
+            <div class="proto-card iso">
+                <h4>B · ISO · Удержания</h4>
+                <p>30–60 с в растяжке, ~70% MVC. <b style="color:var(--text)">+15–25% жёсткости</b> за 8 нед. ATG-hold, dead hang, пауза на Скотте. (Kubo 2006)</p>
+            </div>
+            <div class="proto-card ecc">
+                <h4>C · ECC · Эксцентрик</h4>
+                <p>5 с опускание, Nordic curl, слоумо-подтягивания. Альфредсоновский протокол — <b style="color:var(--text)">золотой стандарт</b> рехаба тендона.</p>
+            </div>
+            <div class="proto-card con">
+                <h4>D · CONTRAST (Блок III)</h4>
+                <p>Тяжёлый сет → 3 мин → плио. PAP даёт <b style="color:var(--text)">+7–15%</b> к скорости/взрыву. (Cometti, Seitz 2016)</p>
+            </div>
+        </div>
+        <div style="margin-top:10px;padding:10px;background:var(--surface-2);border-radius:8px;font-size:11.5px;color:var(--text-dim);line-height:1.45">
+            <b style="color:var(--text)">В план встроены:</b> Nordic curl, ATG hold, dead hang, HSR-калф (Alfredson ахилл), ISO-пауза на Скотте (дистальное сухожилие бицепса), reverse curl (экстензоры локтя — защита от «теннисного локтя»), плио-отжимания, контрастный метод в блоке III.
+        </div>
+    </div>
+
+    <div class="info-card orange">
+        <h3>📊 Периодизация (12 недель)</h3>
+        <table class="pretty">
+            <tr><th>Нед.</th><th>Блок</th><th>Протокол</th><th>RPE</th><th>🔋</th></tr>
+            <tr class="hl-1"><td><b>1</b></td><td>I</td><td>HSR 3-0-3</td><td>6–7</td><td>🟢</td></tr>
+            <tr class="hl-1"><td><b>2</b></td><td>I</td><td>HSR 3-1-3</td><td>7</td><td>🟢</td></tr>
+            <tr class="hl-1"><td><b>3</b></td><td>I</td><td>HSR пик</td><td>7–8</td><td>🟡</td></tr>
+            <tr class="hl-d"><td><b>4</b></td><td>I · DELOAD</td><td>2-0-1, −30%</td><td>5–6</td><td>💤</td></tr>
+            <tr class="hl-2"><td><b>5</b></td><td>II</td><td>HSR 5-1-1 + ISO</td><td>7</td><td>🟢</td></tr>
+            <tr class="hl-2"><td><b>6</b></td><td>II</td><td>HSR 5-1-1 + ECC</td><td>7–8</td><td>🟡</td></tr>
+            <tr class="hl-2"><td><b>7</b></td><td>II</td><td>HSR пик</td><td>8–9</td><td>🔴</td></tr>
+            <tr class="hl-d"><td><b>8</b></td><td>II · DELOAD</td><td>2-0-1, −30%</td><td>5–6</td><td>💤</td></tr>
+            <tr class="hl-3"><td><b>9</b></td><td>III</td><td>CONTRAST</td><td>7 + плио</td><td>🟢</td></tr>
+            <tr class="hl-3"><td><b>10</b></td><td>III</td><td>CONTRAST / кластеры</td><td>8 + плио</td><td>🟡</td></tr>
+            <tr class="hl-3"><td><b>11</b></td><td>III</td><td>Перетест</td><td>8–9</td><td>🔴</td></tr>
+            <tr class="hl-d"><td><b>12</b></td><td>III · DELOAD</td><td>лёгкая техника</td><td>5</td><td>💤</td></tr>
+        </table>
+    </div>
+
+    <div class="info-card blue">
+        <h3>🧠 Тест готовности (перед тренировкой)</h3>
+        <div class="status-box g"><div class="status-ico">✅</div><div><b>Сон 7+ ч, пульс в норме, бодрость:</b> работай по плану, можешь дать RPE на верхней границе. ISO и ECC в полной амплитуде.</div></div>
+        <div class="status-box y"><div class="status-ico">⚠️</div><div><b>Плохой сон / лёгкая болезненность:</b> −1 RPE, вес −5%, ISO сократить на 30%. Убери опциональный 7-й.</div></div>
+        <div class="status-box r"><div class="status-ico">🛑</div><div><b>Пульс +10 уд / боль в пояснице / локте:</b> только разминка + dead hang 2×макс + ходьба. Восстановление.</div></div>
+    </div>
+
+    <div class="info-card green">
+        <h3>📈 Прогрессия</h3>
+        <div class="check-list">
+            <p><b>Double progression:</b> нед 1 — нижняя граница reps · нед 2 — верхняя граница тем же весом · нед 3 — +2.5 кг, снова низ · нед 4 — deload.</p>
+            <p><b>RIR/RPE:</b> RPE 7 ≈ 3 повт. в запасе · RPE 8 ≈ 2 · RPE 9 ≈ 1. RPE 10 в плане нет.</p>
+            <p><b>Сухожильные маркеры:</b> +5 с/нед к ATG-hold и мёртвому вису. Если стоят 2 нед — добавь гантель у груди в присед / вешайся на одной руке.</p>
+            <p><b>На плато по весу:</b> (1) продли эксцентрик до 6–7 с · (2) пауза 3 с в растяжке · (3) cluster 4×(3+3) 15 с · (4) myo-reps на изоляции · (5) ранний переход к контрастному методу.</p>
+            <p><b>В дефиците:</b> RPE потолок −0.5. Не гонись за весом — держи темп и форму.</p>
+        </div>
+    </div>
+
+    <div class="info-card">
+        <h3>🛡️ Безопасность спины (L5-S1)</h3>
+        <div class="check-list">
+            <p><b>Исключено навсегда:</b> присед со штангой на спине · становая с пола штангой · армейский стоя со штангой · наклонная тяга штанги · гуд-морнинги · дровосек · скручивания с ротацией · hip thrust со штангой.</p>
+            <p><b>Жим над головой</b> — только сидя с опорой спины.</p>
+            <p><b>Тяги</b> — одной рукой с упором колена и руки в скамью (нейтральный позвоночник).</p>
+            <p><b>Ноги</b> — одной ногой в тренажёре, болгарка с ГА, Nordic, ATG hold. Никакой осевой штанги.</p>
+            <p><b>Ежедневно:</b> мёртвый вис 30–60 с (декомпрессия диска) · cat-cow 10 повт · T-spine rotations сидя 10 повт.</p>
+        </div>
+    </div>
+
+    <div class="info-card">
+        <h3>🥩 Питание под сухожилия + дефицит</h3>
+        <div class="check-list">
+            <p><b>Белок</b> 1.8–2.2 г/кг (≈150–175 г) — без этого ни мышцы, ни коллаген.</p>
+            <p><b>Углеводы пре-тре</b> 40–60 г за 60–90 мин.</p>
+            <p><b>Креатин</b> 5 г/сут — доказательно держит силу в дефиците.</p>
+            <p><b>Желатин 15 г + витамин С 50 мг</b> за 45–60 мин до тренировки — <b>+100% к синтезу коллагена</b> (Shaw 2017). Для сухожилий = деньги на землю.</p>
+            <p><b>Омега-3 (EPA+DHA) 2 г/сут</b> — снижает воспаление, поддерживает коллаген.</p>
+            <p><b>Сон</b> 7.5+ ч. Без сна тренировка сгорает.</p>
+        </div>
+    </div>
+
+    <div class="info-card">
+        <h3>💤 Разгрузочная неделя (4 / 8 / 12)</h3>
+        <div class="check-list">
+            <p>−1 сет из каждого упражнения</p>
+            <p>Веса −30–40% от рабочих</p>
+            <p>Темп 2-0-1 (убираем HSR медленный)</p>
+            <p>ISO-holds уменьшаем вдвое (30 с → 15 с)</p>
+            <p>Никакой плиометрии и контрастного метода</p>
+            <p>Тренировка ≤ 30 мин, выходишь свежим</p>
+        </div>
+    </div>
+
+    <button class="reset-btn" id="resetBtn">🗑 Стереть всё введённое (веса/отметки)</button>
+</div>
+
+<!-- Rest timer overlay -->
+<div class="timer-overlay" id="timerOverlay">
+    <div class="timer-card">
+        <div class="timer-label">ОТДЫХ</div>
+        <div class="timer-num" id="timerNum">1:30</div>
+        <div class="timer-total" id="timerTotal">из 1:30</div>
+        <div class="timer-progress"><div class="timer-progress-fill" id="timerFill" style="width:100%"></div></div>
+        <div class="timer-actions">
+            <button class="timer-pill" data-sec="60">60</button>
+            <button class="timer-pill active" data-sec="90">90</button>
+            <button class="timer-pill" data-sec="120">2′</button>
+            <button class="timer-pill" data-sec="180">3′</button>
+        </div>
+        <button class="timer-close" id="timerClose">Закрыть</button>
+    </div>
+</div>
+
+<footer>
+    TROY / DRAGON v2 · tendon-loaded · сделано под iOS Safari<br>
+    <b>Данные сохраняются локально</b> (localStorage). Добавь на экран «Домой» для full-screen.
+</footer>
+
+<script>
+/* ===== PROGRAM DATA · 3 days, 12 weeks ===== */
+
+const MESOS = [
+    { id:'meso-1', name:'БЛОК I · HSR BASE (тендон-разгон)', desc:'Медленный темп 3-0-3 / 3-1-3. Осваиваем HSR, лёгкие ISO 30 с, включаем плио-пуш-ап. Цель — настроить соединительную ткань, не гнать веса.', pills:{comp:'RPE 6–7',iso:'30 с',power:'плио 4×3'} },
+    { id:'meso-2', name:'БЛОК II · ECCENTRIC OVERLOAD', desc:'Темп 5-1-1 → 6-1-1. ISO 45–60 с. Эксцентрик-оверлоад на 1–2 упр/день. Здесь растёт жёсткость сухожилий максимально быстро.', pills:{comp:'RPE 7–9',iso:'45–60 с',power:'плио 5×3'} },
+    { id:'meso-3', name:'БЛОК III · CONTRAST (упругость)', desc:'Французский контрастный метод: тяжёлый сет → 20 с → плио-сет. Post-activation potentiation даёт «взрывную» выдачу. ISO убираем — ЦНС занят скоростью.', pills:{comp:'RPE 7 + плио',iso:'—',power:'контраст'} }
+];
+
+const WEEKS = [
+    { n:1, meso:0, type:'build', label:'Неделя 1 · Блок I · HSR 3-0-3' },
+    { n:2, meso:0, type:'build', label:'Неделя 2 · Блок I · +reps' },
+    { n:3, meso:0, type:'peak',  label:'Неделя 3 · Блок I · пик блока' },
+    { n:4, meso:0, type:'deload',label:'Неделя 4 · DELOAD · восст.' },
+    { n:5, meso:1, type:'build', label:'Неделя 5 · Блок II · HSR 5-1-1' },
+    { n:6, meso:1, type:'build', label:'Неделя 6 · Блок II · +ECC' },
+    { n:7, meso:1, type:'peak',  label:'Неделя 7 · Блок II · пик блока' },
+    { n:8, meso:1, type:'deload',label:'Неделя 8 · DELOAD · восст.' },
+    { n:9, meso:2, type:'build', label:'Неделя 9 · Блок III · CONTRAST' },
+    { n:10,meso:2, type:'build', label:'Неделя 10 · Блок III · +кластеры' },
+    { n:11,meso:2, type:'peak',  label:'Неделя 11 · Блок III · ПЕРЕТЕСТ' },
+    { n:12,meso:2, type:'deload',label:'Неделя 12 · DELOAD · сброс' }
+];
+
+/*
+Zones:
+  zone-power   — скорость/плио (красный)
+  zone-hsr     — HSR-компаунд медленный (оранж)
+  zone-ecc     — эксцентрик-оверлоад (красн/оранж градиент)
+  zone-iso     — изометрия (фиолет)
+  zone-volume  — объём/изоляции (синий)
+  zone-grip    — вис/хват/кор (серый)
+*/
+
+const PROGRAM = {
+    d1: {
+        title:'День 1 · PUSH + DELTS',
+        meta:'ПН · Грудь · Трицепс · Плечи',
+        intro:'<b>Акцент на сухожилия:</b> плио-отжим на разогрев эластики, HSR-темп на наклонном, ISO-пауза в дипах, медленный эксцентрик в разгибаниях. Это не «жим и махи» — это нагрузка на соединительную ткань под маской привычных упражнений.',
+        warmup:[
+            'Скакалка / велотренажёр — 2 мин',
+            'T-spine rotations сидя + круги плечами — 2 мин',
+            '2×10 отведений ГА 2 кг (ротаторы) + 2×10 отжим. от скамьи',
+            'Подводящий сет на наклонный жим 40–50% — 1×6'
+        ],
+        exercises:[
+            { zone:'zone-power', name:'Плиометрическое отжимание от пола', sets:4, reps:'3', rest:'90с',
+              tags:['RPE 6','SSC','CONTRAST'],
+              tempo:{notation:'X-0-X', lbl:'ВЗРЫВ', desc:'Опускание быстрое, от груди — максимально резкий отбив ладоней от пола.'},
+              note:'На замену запрыжкам. Отбиваешь ладони от пола — <b>stretch-shortening cycle</b> для груди/трицепса/плечевого пояса. Мягкое приземление, сразу следующий. Если сложно — колени на полу или от скамьи. Это <b>единственное взрывное</b> в дне.',
+              block2:'<b>Блок II:</b> 5×3, можно ноги на скамье (+сопротивление).',
+              block3:'<b>Блок III:</b> используется в паре с упр. №2 как CONTRAST (см. упр. №2).' },
+
+            { zone:'zone-hsr', name:'Наклонный жим гантелей 30°', sets:4, reps:'5–6', rest:'2 мин',
+              tags:['RPE 7–8','HSR','Верх груди'],
+              tempo:{notation:'5-1-1', lbl:'HSR TEMPO', desc:'5 с опускание · 1 с пауза на груди · 1 с взрыв вверх.'},
+              note:'Ключевое движение дня. <b>HSR-темп</b> — 5 сек вниз, пауза 1 сек на груди, 1 сек вверх. Вес такой, чтобы дойти до 5 повторов в темпе, не быстрее. <b>Это не про «нажать побольше» — это про загрузить сухожилие под медленной нагрузкой</b>. Грудь будет в огне на 3-м повторе — это нормально.',
+              block2:'<b>Блок II:</b> темп 6-1-1 (6 с эксцентрик), 4×4–5.',
+              block3:'<b>Блок III · CONTRAST:</b> 4×(4 @ 80% темп 3-0-1 → 20 с → 3 плио-пуш-апа). Пара = сет. Отдых между парами 3 мин.' },
+
+            { zone:'zone-iso', name:'Отжимания на брусьях с весом (ISO в растяжке)', sets:3, reps:'5–7', rest:'2 мин',
+              tags:['RPE 8','ISO','Трицепс+грудь'],
+              tempo:{notation:'4-2-1', lbl:'ECC + ISO', desc:'4 с опускание · 2 с ISO-пауза в нижней растяжке · 1 с взрыв.'},
+              note:'Корпус <b>вертикально</b> → трицепс, или с наклоном 30° → грудь. 4 сек опускаешься, <b>держишь 2 сек в растяжке внизу</b> — это работа на сухожилия груди/плеча в нагруженной растянутой позиции (Kubo). Вес на поясе если >10 повторов без веса. <b>Альт.</b>: close-grip DB press лёжа 3×5–7, тот же темп.',
+              block2:'<b>Блок II:</b> 4×4–6 с 3 с ISO внизу.',
+              block3:'<b>Блок III:</b> 3×5 + 3 плио-дипа (взрывные без веса) = CONTRAST.' },
+
+            { zone:'zone-hsr', name:'Жим гантелей сидя нейтральным хватом', sets:3, reps:'6–8', rest:'90с',
+              tags:['RPE 7–8','Safe head'],
+              tempo:{notation:'2-0-1', lbl:'NORMAL', desc:'Обычный темп — силовая работа плеча.'},
+              note:'Спина прижата к спинке, нейтр. хват (ладони внутрь) = <b>щадяще для плечевого сустава</b>, передние/средние дельты. Опускание до подбородка. <b>Сидя — без осевой.</b>',
+              block2:'<b>Блок II:</b> 4×5–6 с паузой 1 с внизу.',
+              block3:'<b>Блок III:</b> 5×3 скоростной 40–50% (замена на VBT).' },
+
+            { zone:'zone-ecc', name:'Махи гантелей в стороны (slow eccentric)', sets:3, reps:'8–10', rest:'60с',
+              tags:['RPE 8','ECCENTRIC','Средняя дельта'],
+              tempo:{notation:'4-1-1', lbl:'ECCENTRIC', desc:'1 с вверх · 1 с пауза на пике · 4 с опускание.'},
+              note:'Корпус чуть вперёд 5–10°, мизинцы вверх, <b>пауза 1 с на пике</b>, <b>4 с опускание с полным контролем</b>. Вес — такой, чтобы темп не развалился (6–12 кг). Сухожилие дельты растёт от медленного опускания, не от «щелчка» с 20 кг.',
+              block2:'<b>Блок II:</b> 3×6–8 с 5 с эксцентрик + 1×15 partial reps.',
+              block3:'<b>Блок III:</b> 3×8 + myo-rep 4×4 с 10 с отдыха.' },
+
+            { zone:'zone-ecc', name:'Разгибания на трицепс в блоке с канатом', sets:3, reps:'8–10', rest:'60с',
+              tags:['RPE 8–9','ECC','FINISHER','Трицепс'],
+              tempo:{notation:'5-0-1', lbl:'ECCENTRIC', desc:'1 с вниз · 5 с медленное возвращение.'},
+              note:'Локти прижаты к корпусу, развод каната внизу. <b>5 секунд обратно</b> — трицепс в растяжке под нагрузкой = рост сухожилия. Последний сет — <b>myo-drop</b>: до отказа → −30% → до отказа → −30% → до отказа.',
+              block2:'<b>Блок II:</b> 4×6 + ISO 20 с в локауте.',
+              block3:'<b>Блок III:</b> EMOM 8 мин — нечёт: 8 разгибаний / чёт: 8 молотов.' },
+
+            { zone:'zone-grip', name:'Face pull (опционально)', sets:2, reps:'15–20', rest:'60с', optional:true,
+              tags:['RPE 7','ОПЦИЯ','Ротаторы'],
+              tempo:{notation:'2-2-1', lbl:'PAUSE', desc:'2 с пауза в внешней ротации.'},
+              note:'Только если остались силы. Канат на уровне лица, локти выше кистей, тянуть к виску + ротация наружу. Пауза 2 с. <b>Инвестиция в плечевой сустав на годы.</b>',
+              block2:'<b>Блок II:</b> 3×15.',
+              block3:'<b>Блок III:</b> 2×20 с паузой 3 с.' }
+        ]
+    },
+
+    d2: {
+        title:'День 2 · LEGS + TENDON',
+        meta:'СР · Ноги · Ахилл · Пателла · Вис',
+        intro:'<b>Это буквально день сухожилий.</b> Все 6 упражнений целят в соединительную ткань: HSR-жим одной ногой → эксцентрик в болгарке → Nordic на хамстринг → ATG-hold на пателлу → HSR-калф на ахилл → dead hang на плечи и декомпрессию позвоночника. Выходишь с ощущением, что работали связки, не только мышцы.',
+        warmup:[
+            'Скакалка / вело — 3 мин',
+            'World\'s greatest stretch — 2 круга',
+            'Активация ягодиц: glute bridge 2×12 + clamshell 2×12',
+            '«Ретракция лопаток» на турнике 2×6 · подводящий жим одной ногой 40% — 1×6'
+        ],
+        exercises:[
+            { zone:'zone-hsr', name:'Жим одной ногой в тренажёре', sets:4, reps:'6–8 / ногу', rest:'2 мин',
+              tags:['RPE 8','HSR','Unilateral','Safe spine'],
+              tempo:{notation:'3-1-3', lbl:'HSR TEMPO', desc:'3 с вниз · 1 с ISO внизу · 3 с вверх.'},
+              note:'Главное HSR-движение ног. <b>3-1-3 темп</b> = 3 с вниз, 1 с пауза под нагрузкой внизу, 3 с вверх. Полная амплитуда, <b>но не опускай колени к груди</b> (флексия поясницы). Одна нога — устраняет перекосы, нет нагрузки на позвоночник. <b>Фаза «1 с внизу»</b> — это микро-ISO для пателлярной связки.',
+              block2:'<b>Блок II:</b> 4×5–6 темп 5-1-1 с 2 с ISO внизу.',
+              block3:'<b>Блок III · CONTRAST:</b> 4×(5 @ 75% → 10 с → 3 калф-pogo — прыжки на носках на месте).' },
+
+            { zone:'zone-ecc', name:'Болгарский сплит-присед с гантелями', sets:3, reps:'6–8 / ногу', rest:'90с',
+              tags:['RPE 8','ECC','Patellar tendon'],
+              tempo:{notation:'5-1-1', lbl:'ECC+ISO', desc:'5 с опускание · 1 с пауза внизу · 1 с подъём.'},
+              note:'Задняя нога на скамье, гантели <b>по бокам</b> (почти без осевой). <b>5 с опускание</b> = эксцентрическая нагрузка пателлярной связки ≈ Альфредсоновский протокол для колена. 1 с пауза внизу — добавочный ISO. Колено переднее не уходит внутрь.',
+              block2:'<b>Блок II:</b> 4×5 с темпом 6-1-1.',
+              block3:'<b>Блок III:</b> 3×5 обычный темп + 1×10 «пульс» в нижней четверти.' },
+
+            { zone:'zone-ecc', name:'Nordic curl (с помощью рук вверх)', sets:3, reps:'макс 5–8', rest:'90с',
+              tags:['RPE 9','ECCENTRIC','Hamstring tendon'],
+              tempo:{notation:'5s ECC', lbl:'GOLD STD', desc:'Строгий 5-секундный эксцентрик, помощь рук обратно вверх.'},
+              note:'<b>Золотой стандарт</b> против травм хамстринга (Petersen 2011 — снижение повреждений на 65%) и <b>прямая работа на сухожилие бицепса бедра</b>. Колени на мягком, стопы зафиксированы партнёром / нижним валиком / резиной. Опускание <b>3–5 с строго контролировано</b>, помощь руками от пола обратно в верх. <b>Альт.:</b> резина из-за головы — помогает подняться.',
+              block2:'<b>Блок II:</b> 4×макс, эксцентрик 6 с.',
+              block3:'<b>Блок III:</b> 3×макс + ISO 10 с в середине амплитуды.' },
+
+            { zone:'zone-iso', name:'ATG / глубокий присед-изо (удержание)', sets:3, reps:'30–45 с', rest:'90с',
+              tags:['RPE 7–8','ISO','Patellar tendon'],
+              tempo:{notation:'ISO 30-45s', lbl:'ISOMETRIC', desc:'Удержание в нижней точке глубокого приседа.'},
+              note:'Стопы на ширине плеч, сесть в самый низ (ягодицы к пяткам), спина прямая, можно <b>держать лёгкую гантель у груди</b>. <b>30–45 с неподвижного удержания</b> = Kubo-протокол на сухожилие коленной чашечки. <b>Полная замена</b> overcoming-изометриям в раме. Пятки не отрывать. Если тяжело балансировать — держись одной рукой за стойку.',
+              block2:'<b>Блок II:</b> 3×45–60 с, добавь 10 кг у груди.',
+              block3:'<b>Блок III:</b> убрать (ЦНС на скорость).' },
+
+            { zone:'zone-hsr', name:'Подъём на носки стоя (HSR Achilles)', sets:4, reps:'8–10', rest:'60с',
+              tags:['RPE 8','HSR','Ахилл','Alfredson'],
+              tempo:{notation:'2-1-5', lbl:'HSR ACHILLES', desc:'2 с вверх · 1 с пауза наверху · 5 с вниз · 2 с пауза в растяжке внизу.'},
+              note:'<b>Ахилл — сильнейшее сухожилие тела</b>, растёт от HSR-протокола (Beyer 2015). 2 с вверх, 1 с пик, <b>5 с медленное опускание</b>, <b>2 с пауза в растяжке ниже уровня платформы</b>. Вес в смите или в тренажёре стоя. <b>Не стоя со штангой на плечах</b> — берём тренажёр или держим гантели в руках стоя на блинах.',
+              block2:'<b>Блок II:</b> 4×6 темп 2-1-6 + 3 с в растяжке.',
+              block3:'<b>Блок III · CONTRAST:</b> 3×(8 HSR → 10 с → 10 прыжков на носках на месте).' },
+
+            { zone:'zone-iso', name:'Мёртвый вис на турнике', sets:3, reps:'60 с (макс)', rest:'90с',
+              tags:['RPE 8','ISO','Декомпрессия','Хват'],
+              tempo:{notation:'ISO 60s', lbl:'ISOMETRIC', desc:'Пассивный вис, плечи активно притянуты вниз.'},
+              note:'<b>Главная польза для тебя:</b> <b>тракция позвоночника вниз</b> → декомпрессия дисков (полезно для L5-S1). Плюс тендоны плеча, локтя, запястья и хват. Плечи <b>активно</b> притянуты вниз (не пассивно болтаются). Сжимай-разжимай пальцы каждые 10 с. Цель — 60 с. Если &gt;90 с → переход на одну руку или +5 кг на поясе.',
+              block2:'<b>Блок II:</b> 3×макс + в конце подтянуть колени к груди 5 раз (замена подъёму ног в висе — половина движения).',
+              block3:'<b>Блок III:</b> 3× вис с полотенцами на перекладине (ладони не смыкаются) — супер-хват.' }
+        ]
+    },
+
+    d3: {
+        title:'День 3 · ARMS + DELTS',
+        meta:'ПТ · Бицепс · Трицепс · Плечи 2 · Локоть',
+        intro:'<b>День здоровья локтя и рук.</b> HSR-темп на Скотте с ISO-паузой в растяжке = прямая работа на дистальное сухожилие бицепса (самое травмоопасное место у жимовиков). 5-секундный эксцентрик в скулкрашере — триципсовый тендон. Reverse curl — экстензоры предплечья (ключ к защите от «теннисного локтя»). Плюс второй в неделе день средних дельт с медленным темпом.',
+        warmup:[
+            'Скакалка / вело — 2 мин',
+            'Вращения локтями и запястьями — 2 мин',
+            '2×10 face pulls лёгкий вес + 2×10 отжим. от стены',
+            'Подводящие на бицепс с 3–4 кг — 2×8'
+        ],
+        exercises:[
+            { zone:'zone-ecc', name:'Подтягивания нейтр. хватом с весом', sets:4, reps:'4–6', rest:'2 мин',
+              tags:['RPE 8','ECC','Бицепс+','Мин. спина'],
+              tempo:{notation:'5-0-1', lbl:'ECCENTRIC', desc:'1 с взрывной подъём · 5 с медленное опускание.'},
+              note:'Нейтр. хват (ладони внутрь) = <b>максимум бицепса, минимум широчайших</b>. <b>5 секунд опускание</b> — эксцентрик бицепса и сухожилий локтя. Пояс с весом, полная амплитуда. <b>Это единственная вертикальная тяга в неделю</b>, она же работает на бицепс.',
+              block2:'<b>Блок II:</b> 4×3–5 с бóльшим весом, 6 с опускание.',
+              block3:'<b>Блок III · CONTRAST:</b> 4×(4 с весом → 20 с → 3 взрывных подтягивания без веса).' },
+
+            { zone:'zone-hsr', name:'Сгибания на скамье Скотта с EZ', sets:4, reps:'5–7', rest:'90с',
+              tags:['RPE 8–9','HSR','ISO','Distal biceps'],
+              tempo:{notation:'3-1-3 · ISO 2s ↓', lbl:'HSR + ISO', desc:'3 с подъём · 1 с пик · 3 с вниз · 2 с ISO в растяжке внизу.'},
+              note:'<b>Ключевое движение дня.</b> HSR-темп + <b>2-секундная пауза в нижней растяжке</b> = прямая работа на <b>дистальное сухожилие бицепса</b> (самое «щёлкающее» место у жимовиков). Локти на подушке, не отрываются. Полная амплитуда до полной растяжки внизу — не «полуприседы на бицепс».',
+              block2:'<b>Блок II:</b> 4×4–6 темп 5-1-5 + 3 с ISO внизу.',
+              block3:'<b>Блок III:</b> 4×5 + myo-rep финишер 4×4 с 10 с отдыха.' },
+
+            { zone:'zone-ecc', name:'Французский жим лёжа с EZ (к подбородку)', sets:4, reps:'6–8', rest:'90с',
+              tags:['RPE 8','ECC','Triceps tendon','Safe elbow'],
+              tempo:{notation:'5-0-1', lbl:'ECCENTRIC', desc:'5 с опускание · 1 с взрыв вверх.'},
+              note:'Штанга движется <b>к подбородку, а не ко лбу</b> — длинная головка трицепса остаётся в натяжении, нагрузка на сухожилие. <b>5 секунд медленное опускание</b>. Локти неподвижны. <b>Если есть дискомфорт</b> — замена: DB French press 4×6 тот же темп.',
+              block2:'<b>Блок II:</b> 4×5–6 + ISO 15 с в локауте.',
+              block3:'<b>Блок III · CONTRAST:</b> 4×(5 → 20 с → 3 плио-дипа лёгких).' },
+
+            { zone:'zone-hsr', name:'Молоты с гантелями стоя', sets:3, reps:'6–8', rest:'90с',
+              tags:['RPE 8','Brachialis','Хват'],
+              tempo:{notation:'3-2-1 @90°', lbl:'PAUSE @90°', desc:'3 с вверх · пауза 2 с на 90° · 1 с вниз.'},
+              note:'Нейтральный хват → <b>брахиалис + плечелучевая = толщина руки</b>. Корпус не раскачивать. <b>2-секундная пауза на 90°</b> = изо-сокращение сухожилия в наиболее нагруженной точке.',
+              block2:'<b>Блок II:</b> 4×5–6 тяжелее.',
+              block3:'<b>Блок III:</b> 3×8 + 1×21 (7 низ / 7 верх / 7 полных).' },
+
+            { zone:'zone-ecc', name:'Махи гантелей в стороны сидя (slow ECC)', sets:4, reps:'8–10', rest:'60с',
+              tags:['RPE 9','ECC','FINISHER','Средняя дельта'],
+              tempo:{notation:'4-1-1', lbl:'ECCENTRIC', desc:'1 с вверх · 1 с пик · 4 с опускание.'},
+              note:'Сидя — исключаем читинг. Мизинцы вверх, пауза 1 с на пике, <b>4 с опускание</b>. Вес который выдержит темп (6–10 кг). <b>Последний сет</b>: myo-rep — до отказа, 10 с, 4 повт, 10 с, 4 повт.',
+              block2:'<b>Блок II:</b> 3×6 темп 5-1-5 + 1×15 partial reps (верхняя половина).',
+              block3:'<b>Блок III:</b> 3×8 + drop-set −30% × 15.' },
+
+            { zone:'zone-hsr', name:'Обратные сгибания EZ хватом сверху (reverse curl)', sets:3, reps:'10–12', rest:'60с',
+              tags:['RPE 8','HSR','Elbow extensors','KEY'],
+              tempo:{notation:'3-0-3', lbl:'HSR', desc:'3 с вверх · 3 с вниз.'},
+              note:'<b>Критически важное упражнение для локтя.</b> Хват <b>сверху</b>, EZ-гриф. Работают <b>разгибатели предплечья</b> — у 99% жимовиков они забиты, отсюда «теннисный локоть» и «щёлкает» сустав. <b>3-0-3 HSR темп</b> строит сухожилия экстензоров. Вес лёгкий — критично важна техника и амплитуда.',
+              block2:'<b>Блок II:</b> 4×8 темп 4-1-4.',
+              block3:'<b>Блок III:</b> 3×12 + 1×20 лёгкий финиш.' },
+
+            { zone:'zone-grip', name:'Dead hang ИЛИ face pull (опция)', sets:2, reps:'макс / 15', rest:'60с', optional:true,
+              tags:['ОПЦИЯ','Декомпрессия / Плечо'],
+              tempo:{notation:'ISO / 2-2-1', lbl:'FINISHER', desc:'Вис до отказа ИЛИ face pull с 2 с паузой.'},
+              note:'Если остались силы — выбирай: <b>(A) Мёртвый вис 2×макс</b> (декомпрессия после жимов + хват) или <b>(B) Face pull 2×15</b> (здоровье плеча).',
+              block2:'<b>Блок II:</b> оба упражнения по 2×.',
+              block3:'<b>Блок III:</b> только face pull с паузой 3 с.' }
+        ]
+    }
+};
+
+/* ===== STATE ===== */
+const state = {
+    week: Number(localStorage.getItem('td_week') || 1),
+    day: localStorage.getItem('td_day') || 'd1',
+    restSec: Number(localStorage.getItem('td_restSec') || 90),
+    timer: null,
+    timerStart: 0,
+    timerDuration: 0
+};
+
+function storeKey(w,d,e,s,f){return `td_w${w}_${d}_e${e}_s${s}_${f}`;}
+function doneKey(w,d,e,s){return `td_w${w}_${d}_e${e}_s${s}_done`;}
+function getMeso(n){const w = WEEKS[n-1]; return { meso: MESOS[w.meso], week: w };}
+
+/* ===== RENDER ===== */
+function renderWeekGrid(){
+    const grid = document.getElementById('weekGrid');
+    grid.innerHTML = '';
+    WEEKS.forEach((w)=>{
+        const btn = document.createElement('button');
+        btn.className = `week-btn meso-${w.meso+1}${w.type==='deload'?' deload':''}${w.n===state.week?' active':''}`;
+        btn.innerHTML = `${w.n}<span class="micro">${w.type==='deload'?'DL':(w.type==='peak'?'PK':'')}</span>`;
+        btn.addEventListener('click', ()=>{
+            state.week = w.n;
+            localStorage.setItem('td_week', w.n);
+            renderWeekGrid();
+            renderMesoBanner();
+            renderDay();
+        });
+        grid.appendChild(btn);
+    });
+}
+
+function renderMesoBanner(){
+    const { meso, week } = getMeso(state.week);
+    document.getElementById('weekTitle').textContent = week.label;
+    const banner = document.getElementById('mesoBanner');
+    banner.className = 'meso-banner ' + (week.type==='deload' ? 'deload' : meso.id);
+    document.getElementById('mesoTitle').textContent = week.type==='deload'
+        ? `🔋 ${week.label}`
+        : meso.name;
+    document.getElementById('mesoDesc').textContent = week.type==='deload'
+        ? 'DELOAD: −1 сет на упражнение, веса −30–40%, темп 2-0-1, ISO сокращаем вдвое, никакой плио/контраста. Тренировка ≤30 мин, выходишь свежим.'
+        : meso.desc;
+    const pills = document.getElementById('rpePills');
+    pills.innerHTML = '';
+    const add = (l,v)=>{ const p=document.createElement('span'); p.className='pill'; p.innerHTML=`${l}<b>${v}</b>`; pills.appendChild(p); };
+    if(week.type==='deload'){
+        add('RPE:', '5–6');
+        add('ISO:', '15 с');
+        add('Плио:', '—');
+    } else {
+        add('Компаунды:', meso.pills.comp);
+        add('ISO:', meso.pills.iso);
+        add('Скор/Плио:', meso.pills.power);
+    }
+}
+
+function renderDay(){
+    const container = document.getElementById('dayContainer');
+    container.innerHTML = '';
+    const buttons = document.querySelectorAll('.day-nav button');
+    const infoSec = document.getElementById('info');
+    buttons.forEach(b=>b.classList.toggle('active', b.getAttribute('data-day')===state.day));
+    if(state.day==='info'){
+        infoSec.classList.add('active');
+        updateAllDots();
+        return;
+    }
+    infoSec.classList.remove('active');
+    const data = PROGRAM[state.day];
+
+    const sec = document.createElement('div');
+    sec.className = 'section active';
+
+    // Count required sets (non-optional) for progress
+    let totalSets = 0, doneSets = 0;
+    data.exercises.forEach((e,ei)=>{
+        if(e.optional) return;
+        for(let si=0;si<e.sets;si++){
+            totalSets++;
+            if(localStorage.getItem(doneKey(state.week,state.day,ei,si))==='1') doneSets++;
+        }
+    });
+    const pct = totalSets ? Math.round(doneSets/totalSets*100) : 0;
+
+    sec.insertAdjacentHTML('beforeend', `
+        <div class="day-title"><h2>${data.title}</h2><span class="meta">${data.meta}</span></div>
+        <div class="progress-row">
+            <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+            <div class="progress-txt">${doneSets}/${totalSets}</div>
+        </div>
+        ${pct===100?'<div class="day-done-strip show">✓ День завершён · отличная работа</div>':''}
+        ${data.intro?`<div class="day-intro">${data.intro}</div>`:''}
+        <div class="warmup"><h3>🔥 Разминка · 5–7 мин</h3><ul>${data.warmup.map(w=>`<li>${w}</li>`).join('')}</ul></div>
+    `);
+
+    data.exercises.forEach((ex, ei)=>{
+        const card = document.createElement('div');
+        card.className = `exercise ${ex.zone}${ex.optional?' optional':''}`;
+        const allDone = Array.from({length:ex.sets},(_,si)=>localStorage.getItem(doneKey(state.week,state.day,ei,si))==='1').every(Boolean);
+        if(allDone && !ex.optional) card.classList.add('done');
+
+        const tagsHTML = ex.tags.map(t=>{
+            if(t.startsWith('RPE')) return `<span class="tag tag-rpe">${t}</span>`;
+            if(t==='ISO'||t==='ISOMETRIC') return `<span class="tag tag-iso">${t}</span>`;
+            if(t==='HSR'||t==='ECC'||t==='ECCENTRIC'||t.startsWith('SSC')||t==='CONTRAST'||t==='GOLD STD') return `<span class="tag tag-tempo">${t}</span>`;
+            if(t.toLowerCase().includes('safe')) return `<span class="tag tag-safe">${t}</span>`;
+            if(t==='ОПЦИЯ'||t==='FINISHER'||t==='KEY') return `<span class="tag tag-opt">${t}</span>`;
+            return `<span class="tag tag-zone">${t}</span>`;
+        }).join('');
+
+        const tempoHTML = ex.tempo ? `
+            <div class="tempo-box">
+                <div>
+                    <div class="lbl">${ex.tempo.lbl}</div>
+                    <div class="big">${ex.tempo.notation}</div>
+                </div>
+                <div class="desc">${ex.tempo.desc}</div>
+            </div>` : '';
+
+        card.innerHTML = `
+            <div class="exercise-header">
+                <div class="ex-num">${ei+1}</div>
+                <div class="ex-name">${ex.name}</div>
+                <div class="ex-params">
+                    <div class="sets">${ex.sets}×${ex.reps}</div>
+                    <div class="rest">отд. ${ex.rest}</div>
+                </div>
+                <div class="ex-chev">▼</div>
+            </div>
+            <div class="ex-body"><div class="ex-body-inner">
+                <div class="tag-row">${tagsHTML}</div>
+                ${tempoHTML}
+                <div class="ex-note">${ex.note}</div>
+                ${ex.block2?`<div class="ex-block2">${ex.block2}</div>`:''}
+                ${ex.block3?`<div class="ex-block3">${ex.block3}</div>`:''}
+                <div class="sets-table">
+                    <div class="sets-head"><div>Сет</div><div>Вес (кг)</div><div>Повт.</div><div>✓</div></div>
+                    ${Array.from({length:ex.sets},(_,si)=>{
+                        const wVal = localStorage.getItem(storeKey(state.week,state.day,ei,si,'w'))||'';
+                        const rVal = localStorage.getItem(storeKey(state.week,state.day,ei,si,'r'))||'';
+                        const done = localStorage.getItem(doneKey(state.week,state.day,ei,si))==='1';
+                        return `<div class="set-row${done?' done':''}" data-ex="${ei}" data-set="${si}">
+                            <div class="n">#${si+1}</div>
+                            <input type="text" inputmode="decimal" placeholder="—" value="${wVal}" data-field="w" />
+                            <input type="text" inputmode="decimal" placeholder="—" value="${rVal}" data-field="r" />
+                            <div class="set-check${done?' done':''}" data-check>${done?'✓':''}</div>
+                        </div>`;
+                    }).join('')}
+                </div>
+            </div></div>
+        `;
+        sec.appendChild(card);
+
+        card.querySelector('.exercise-header').addEventListener('click', ()=>card.classList.toggle('open'));
+        card.querySelectorAll('input[type="text"]').forEach(inp=>{
+            inp.addEventListener('input', ()=>{
+                const row = inp.closest('.set-row');
+                const si = Number(row.getAttribute('data-set'));
+                const field = inp.getAttribute('data-field');
+                localStorage.setItem(storeKey(state.week,state.day,ei,si,field), inp.value);
+            });
+            inp.addEventListener('focus', ()=>inp.select());
+        });
+        card.querySelectorAll('[data-check]').forEach(btn=>{
+            btn.addEventListener('click', ()=>{
+                const row = btn.closest('.set-row');
+                const si = Number(row.getAttribute('data-set'));
+                const k = doneKey(state.week,state.day,ei,si);
+                const now = localStorage.getItem(k)==='1';
+                if(now){
+                    localStorage.removeItem(k);
+                } else {
+                    localStorage.setItem(k,'1');
+                    startTimer(state.restSec);
+                    if(navigator.vibrate) navigator.vibrate(30);
+                }
+                renderDay();
+                updateAllDots();
+            });
+        });
+    });
+
+    container.appendChild(sec);
+    updateAllDots();
+}
+
+function updateAllDots(){
+    ['d1','d2','d3'].forEach(d=>{
+        const dot = document.querySelector(`[data-dot="${d}"]`);
+        if(!dot) return;
+        const exs = PROGRAM[d].exercises.filter(e=>!e.optional);
+        const total = exs.reduce((s,e)=>s+e.sets,0);
+        let done = 0, ei=-1;
+        PROGRAM[d].exercises.forEach((e,idx)=>{
+            if(e.optional) return;
+            for(let si=0;si<e.sets;si++){
+                if(localStorage.getItem(doneKey(state.week,d,idx,si))==='1') done++;
+            }
+        });
+        dot.classList.toggle('done', done===total && total>0);
+    });
+}
+
+/* --- Timer --- */
+function startTimer(sec){
+    state.restSec = sec;
+    localStorage.setItem('td_restSec', sec);
+    state.timerStart = Date.now();
+    state.timerDuration = sec*1000;
+    document.getElementById('timerOverlay').classList.add('show');
+    document.querySelectorAll('.timer-pill').forEach(p=>{
+        p.classList.toggle('active', Number(p.getAttribute('data-sec'))===sec);
+    });
+    document.getElementById('timerTotal').textContent = 'из ' + fmt(sec);
+    tickTimer();
+    if(state.timer) clearInterval(state.timer);
+    state.timer = setInterval(tickTimer, 250);
+}
+function fmt(s){ const m=Math.floor(s/60); const r=s%60; return m+':'+(r<10?'0':'')+r; }
+function tickTimer(){
+    const elapsed = Date.now() - state.timerStart;
+    const left = Math.max(0, state.timerDuration - elapsed);
+    const secLeft = Math.ceil(left/1000);
+    document.getElementById('timerNum').textContent = fmt(secLeft);
+    document.getElementById('timerFill').style.width = Math.max(0,(left/state.timerDuration)*100) + '%';
+    if(left<=0){
+        clearInterval(state.timer); state.timer=null;
+        if(navigator.vibrate) navigator.vibrate([100,50,100,50,200]);
+        try{
+            const ctx = new (window.AudioContext||window.webkitAudioContext)();
+            const o = ctx.createOscillator(); const g = ctx.createGain();
+            o.connect(g); g.connect(ctx.destination);
+            o.frequency.value = 880; g.gain.value = 0.15;
+            o.start();
+            setTimeout(()=>{o.frequency.value=1320;},150);
+            setTimeout(()=>{o.stop();ctx.close();},400);
+        }catch(e){}
+    }
+}
+function closeTimer(){ if(state.timer) clearInterval(state.timer); state.timer=null; document.getElementById('timerOverlay').classList.remove('show'); }
+
+/* --- events --- */
+document.querySelectorAll('.day-nav button').forEach(b=>{
+    b.addEventListener('click', ()=>{ state.day = b.getAttribute('data-day'); localStorage.setItem('td_day', state.day); renderDay(); });
+});
+document.querySelectorAll('.timer-pill').forEach(p=>{
+    p.addEventListener('click', ()=>startTimer(Number(p.getAttribute('data-sec'))));
+});
+document.getElementById('timerClose').addEventListener('click', closeTimer);
+document.getElementById('timerOverlay').addEventListener('click', (e)=>{ if(e.target.id==='timerOverlay') closeTimer(); });
+document.getElementById('resetBtn').addEventListener('click', ()=>{
+    if(!confirm('Удалить все введённые веса, повторы и отметки? Текущая неделя и день останутся.')) return;
+    const keep = ['td_week','td_day','td_restSec'];
+    const toDel = [];
+    for(let i=0;i<localStorage.length;i++){
+        const k = localStorage.key(i);
+        if(k && k.startsWith('td_') && !keep.includes(k)) toDel.push(k);
+    }
+    toDel.forEach(k=>localStorage.removeItem(k));
+    renderDay();
+    updateAllDots();
+    alert('Готово. Данные стёрты.');
+});
+document.querySelectorAll('.proto-chip').forEach(c=>{
+    c.addEventListener('click', ()=>{ state.day='info'; localStorage.setItem('td_day','info'); renderDay(); window.scrollTo({top:0,behavior:'smooth'}); });
+});
+
+/* init */
+renderWeekGrid();
+renderMesoBanner();
+renderDay();
+updateAllDots();
+</script>
+</body>
+</html>
